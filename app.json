@@ -10,6 +10,11 @@
     },
     "ios": {
       "bundleIdentifier": "com.studenttracker.app"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "06521b95-38b0-42dc-87a9-8648a3bbfad6"
+      }
     }
   }
 }
