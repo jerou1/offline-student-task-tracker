@@ -33,6 +33,7 @@ export default function HomeScreen({
         <StatCard label="Active" value={stats.active} icon="📝" />
         <StatCard label="Completed" value={stats.completed} icon="✓" />
         <StatCard label="Overdue" value={stats.overdue} icon="⚠️" />
+        <StatCard label="Due Today" value={stats.dueToday} icon="📅" />
       </View>
 
       <View style={styles.progressCard}>
