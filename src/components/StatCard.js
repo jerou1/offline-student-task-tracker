@@ -14,7 +14,7 @@ export default function StatCard({ label, value, icon }) {
 
 const styles = StyleSheet.create({
   statCard: {
-    width: "48%",
+    width: "47%",
     minHeight: 118,
     backgroundColor: COLORS.card,
     borderRadius: 16,
