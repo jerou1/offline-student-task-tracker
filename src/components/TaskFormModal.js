@@ -47,6 +47,13 @@ export default function TaskFormModal({
   }, [visible, editingTask]);
 
   function handleSave() {
+    if (form.dueDate && !/^\d{4}-\d{2}-\d{2}$/.test(form.dueDate)) {
+  Alert.alert(
+    "Invalid due date",
+    "Please use the format YYYY-MM-DD."
+  );
+  return;
+}
     if (!form.title.trim()) {
       Alert.alert("Missing title", "Please enter the assignment/task name.");
       return;

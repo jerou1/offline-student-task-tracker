@@ -22,6 +22,9 @@ export default function TaskCard({ task, onToggle, onEdit, onDelete }) {
         </Text>
 
         <View style={styles.metaRow}>
+          <Text style={styles.statusText}>
+  {task.completed ? "Completed" : "Active"}
+</Text>
           <Text style={styles.subject}>{task.subject || "General"}</Text>
           <View
             style={[styles.priorityPill, { backgroundColor: priority.bg }]}
@@ -123,4 +126,10 @@ const styles = StyleSheet.create({
   },
   smallButtonText: { color: COLORS.primary, fontSize: 11, fontWeight: "800" },
   deleteButton: { backgroundColor: COLORS.redSoft },
+  statusText: {
+  fontSize: 11,
+  fontWeight: "700",
+  color: COLORS.muted,
+  marginBottom: 5,
+},
 });
