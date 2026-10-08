@@ -2,6 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { loadTasks, saveTasks } from "../storage/taskStorage";
 import { todayISO } from "../utils/dateUtils";
 
+function normalizeText(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function createTaskId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 export function useTasks() {
   const [tasks, setTasks] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -11,8 +19,9 @@ export function useTasks() {
 
     async function initialize() {
       const initialTasks = await loadTasks();
+
       if (active) {
-        setTasks(initialTasks);
+        setTasks(Array.isArray(initialTasks) ? initialTasks : []);
         setLoaded(true);
       }
     }
@@ -31,14 +40,22 @@ export function useTasks() {
   }, [tasks, loaded]);
 
   const stats = useMemo(() => {
+    const today = todayISO();
+
     const completed = tasks.filter((task) => task.completed).length;
     const active = tasks.length - completed;
+
     const overdue = tasks.filter(
       (task) =>
-        !task.completed && task.dueDate && task.dueDate < todayISO()
+        !task.completed &&
+        task.dueDate &&
+        task.dueDate < today
     ).length;
+
     const dueToday = tasks.filter(
-      (task) => !task.completed && task.dueDate === todayISO()
+      (task) =>
+        !task.completed &&
+        task.dueDate === today
     ).length;
 
     return {
@@ -51,16 +68,16 @@ export function useTasks() {
   }, [tasks]);
 
   function addTask(task) {
-    setTasks((current) => [
-      ...current,
-      {
-        id: Date.now().toString(),
-        ...task,
-        title: task.title.trim(),
-        subject: task.subject.trim(),
-        completed: false,
-      },
-    ]);
+    const newTask = {
+      id: createTaskId(),
+      ...task,
+      title: normalizeText(task.title),
+      subject: normalizeText(task.subject),
+      notes: normalizeText(task.notes),
+      completed: false,
+    };
+
+    setTasks((current) => [...current, newTask]);
   }
 
   function updateTask(id, updatedTask) {
@@ -70,8 +87,9 @@ export function useTasks() {
           ? {
               ...task,
               ...updatedTask,
-              title: updatedTask.title.trim(),
-              subject: updatedTask.subject.trim(),
+              title: normalizeText(updatedTask.title),
+              subject: normalizeText(updatedTask.subject),
+              notes: normalizeText(updatedTask.notes),
             }
           : task
       )
@@ -81,17 +99,26 @@ export function useTasks() {
   function toggleTask(id) {
     setTasks((current) =>
       current.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
+        task.id === id
+          ? {
+              ...task,
+              completed: !task.completed,
+            }
+          : task
       )
     );
   }
 
   function deleteTask(id) {
-    setTasks((current) => current.filter((task) => task.id !== id));
+    setTasks((current) =>
+      current.filter((task) => task.id !== id)
+    );
   }
 
   function clearCompleted() {
-    setTasks((current) => current.filter((task) => !task.completed));
+    setTasks((current) =>
+      current.filter((task) => !task.completed)
+    );
   }
 
   return {
