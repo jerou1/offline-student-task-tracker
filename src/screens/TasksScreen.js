@@ -50,8 +50,10 @@ export default function TasksScreen({
         <View>
           <Text style={styles.greeting}>My Assignments</Text>
           <Text style={styles.dashboardSub}>
-            {visibleTasks.length} task(s)
-          </Text>
+                 {visibleTasks.length === 1
+                 ? "1 assignment"
+    : `${visibleTasks.length} assignments`}
+</Text>
         </View>
         <Pressable onPress={onAdd} style={styles.addButton}>
           <Text style={styles.addButtonText}>+ Add</Text>
